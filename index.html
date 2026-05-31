@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warung Makan Sekitar SS - Hermes Check-in Bot</title>
+  <title>Warung Makan Sekitar SS — Radius 250m</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -15,33 +15,53 @@
     .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
     header {
       text-align: center;
-      padding: 3rem 02rem;
+      padding: 3rem 2rem;
       border-bottom: 1px solid #2a2a4a;
       margin-bottom: 2rem;
     }
     header h1 { font-size: 2.2rem; color: #00d4ff; margin-bottom: 0.5rem; }
     header .tagline { color: #888; font-size: 1.1rem; }
-    .badge-row { margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-    .badge {
+    header .meta {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    header .meta span {
       background: #1a1a3a;
-      border: 1px solid #00d4ff40;
-      color: #00d4ff;
+      border: 1px solid #2a2a4a;
+      color: #aaa;
       padding: 0.3rem 0.8rem;
       border-radius: 20px;
       font-size: 0.85rem;
     }
-    .badge.success { color: #00ff88; border-color: #00ff8840; }
-    .badge.warn { color: #ffaa00; border-color: #ffaa0040; }
+    header .meta span strong { color: #00d4ff; }
 
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .summary-card {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .summary-card .num { font-size: 2rem; font-weight: 700; color: #00d4ff; }
+    .summary-card .label { color: #888; font-size: 0.85rem; margin-top: 0.3rem; }
 
     .card {
       background: #1a1a2e;
       border: 1px solid #2a2a4a;
       border-radius: 12px;
       padding: 1.5rem;
- }
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
     .card h2 {
       font-size: 1rem;
       text-transform: uppercase;
@@ -51,117 +71,62 @@
       padding-bottom: 0.5rem;
       border-bottom: 1px solid #2a2a4a;
     }
-    .card h3 { color: #fff; margin: 1rem 0 0.5rem; font-size: 0.95rem; }
-    .card h3:first-child { margin-top: 0; }
 
-    .status-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #ffffff08;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
     }
-    .status-item:last-child { border-bottom: none; }
-    .status-item .label { color: #888; font-size: 0.9rem; }
-    .status-item .value { font-weight: 600; }
-    .status-item .value.connected { color: #00ff88; }
-    .status-item .value.running { color: #00ff88; }
-
-    .platform-item {
+    thead tr {
       background: #0f0f1a;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
+      border-bottom: 2px solid #2a2a4a;
     }
-    .platform-item:last-child { margin-bottom: 0; }
-    .platform-item .name { font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
-    .platform-item .detail { font-size: 0.85rem; color: #888; }
-    .platform-item .detail span { color: #00d4ff; }
-
-    .feature-item {
-      background: #0f0f1a;
-      border-left: 3px solid #00d4ff;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.8rem;
-      border-radius: 0 8px 8px 0;
-    }
-    .feature-item .name { font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
-    .feature-item .desc { font-size: 0.85rem; color: #aaa; }
-
-    .routing-table { width: 100%; }
-    .routing-table th {
+    th {
       text-align: left;
+      padding: 0.7rem 1rem;
       color: #888;
       font-size: 0.8rem;
       text-transform: uppercase;
-      padding: 0.3rem 0;
-      border-bottom: 1px solid #2a2a4a;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
-    .routing-table td { padding: 0.4rem 0; }
-    .routing-table td:first-child { color: #ffaa00; font-size: 0.85rem; }
-    .routing-table td:last-child { color: #00d4ff; font-size: 0.85rem; }
-
-    .activity-item {
-      display: flex;
-      gap: 1rem;
-      padding: 0.5rem 0;
+    td {
+      padding: 0.7rem 1rem;
       border-bottom: 1px solid #ffffff08;
+      vertical-align: middle;
     }
-    .activity-item:last-child { border-bottom: none; }
-    .activity-item .time { color: #00d4ff; font-size: 0.85rem; min-width: 60px; }
-    .activity-item .event { color: #ccc; font-size: 0.9rem; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #ffffff05; }
 
-    .decision-item {
-      background: #0f0f1a;
-      border-radius: 8px;
-      padding: 0.8rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #ccc;
+    td .name { font-weight: 600; color: #fff; }
+    td .type-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
     }
-    .decision-item::before { content: "→ "; color: #00ff88; }
+    td .type-badge.restaurant { background: #00d4ff20; color: #00d4ff; }
+    td .type-badge.cafe { background: #00ff8820; color: #00ff88; }
+    td .distance { color: #ffaa00; font-weight: 700; }
+    td .coords { color: #aaa; font-size: 0.8rem; }
+    td .cuisine { color: #aaa; font-size: 0.85rem; }
+    td .hours { color: #888; font-size: 0.8rem; }
+    td .notes { color: #666; font-size: 0.8rem; font-style: italic; }
 
-    .cli-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-    .cli-item {
-      background: #0f0f1a;
-      border-radius: 6px;
-      padding: 0.6rem;
-      font-size: 0.85rem;
-    }
-    .cli-item .tool { color: #00d4ff; font-weight: 700; }
-    .cli-item .path { color: #888; font-size: 0.8rem; word-break: break-all; }
-
-    .full-width { grid-column: 1 / -1; }
-
-    .next-step {
-      display: flex;
-      gap: 0.8rem;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid #ffffff08;
-    }
-    .next-step:last-child { border-bottom: none; }
-    .next-step .num {
-      background: #00d4ff20;
-      color: #00d4ff;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .next-step .text { color: #ccc; font-size: 0.9rem; }
-
-    footer {
+    .source {
       text-align: center;
-      padding: 2rem 0;
-      margin-top: 2rem;
-      border-top: 1px solid #2a2a4a;
       color: #555;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #2a2a4a;
+    }
+
+    @media (max-width: 768px) {
+      table { font-size: 0.8rem; }
+      th, td { padding: 0.5rem 0.6rem; }
     }
   </style>
 </head>
@@ -170,217 +135,102 @@
     <header>
       <h1 id="project-name">Loading...</h1>
       <p class="tagline" id="tagline"></p>
-      <div class="badge-row">
-        <span class="badge" id="platform-badge"></span>
-        <span class="badge success" id="status-badge"></span>
-        <span class="badge warn" id="workhours-badge"></span>
+      <div class="meta">
+        <span id="location-meta"></span>
+        <span id="radius-meta"></span>
+        <span id="total-meta"></span>
       </div>
     </header>
 
-    <div class="grid">
-      <!-- Gateway Status -->
-      <div class="card">
-        <h2>Gateway Status</h2>
-        <div class="status-item">
-          <span class="label">Status</span>
-          <span class="value running" id="gw-status">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Uptime</span>
-          <span class="value" id="gw-uptime">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Memory (typical)</span>
-          <span class="value" id="gw-memory">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Session Storage</span>
-          <span class="value" id="gw-session">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Secret Redaction</span>
-          <span class="value" id="gw-redact">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Log Location</span>
-          <span class="value" id="gw-log">—</span>
-        </div>
-      </div>
+    <div class="summary-row" id="summary-row"></div>
 
-      <!-- Bot Persona -->
-      <div class="card">
-        <h2>Bot Persona: Papa Zola</h2>
-        <div class="status-item">
-          <span class="label">Name</span>
-          <span class="value" id="bot-name">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Role</span>
-          <span class="value" id="bot-role">—</span>
-        </div>
-        <h3>Personality</h3>
-        <p id="bot-personality" style="color:#888;font-size:0.9rem;margin-top:0.3rem;"></p>
-        <h3>Language Policy</h3>
-        <p id="bot-language" style="color:#ffaa00;font-size:0.85rem;margin-top:0.3rem;"></p>
-      </div>
-
-      <!-- Platforms -->
-      <div class="card">
-        <h2>Connected Platforms</h2>
-        <div id="platforms-list"></div>
-      </div>
-
-      <!-- System Architecture -->
-      <div class="card">
-        <h2>System Architecture</h2>
-        <div class="status-item">
-          <span class="label">Supervision</span>
-          <span class="value" id="arch-supervision">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Container</span>
-          <span class="value" id="arch-container">—</span>
-        </div>
-        <div class="status-item">
-          <span class="label">Python</span>
-          <span class="value" id="arch-python">—</span>
-        </div>
-        <h3>CLI Tools</h3>
-        <div class="cli-grid" id="cli-grid"></div>
-      </div>
-
-      <!-- Features -->
-      <div class="card">
-<h2>Features</h2>
-        <div id="features-list"></div>
-      </div>
-
-      <!-- Platform Routing -->
-      <div class="card">
-        <h2>Platform Routing (Intent → Platform)</h2>
-        <table class="routing-table">
-          <thead>
-            <tr>
-              <th>Intent</th>
-              <th>Platform</th>
-            </tr>
-          </thead>
-          <tbody id="routing-body"></tbody>
-        </table>
-      </div>
-
-      <!-- CLI Tools (full) -->
-      <div class="card full-width">
-        <h2>CLI Tools Available</h2>
-        <div class="cli-grid" id="cli-full"></div>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="card full-width">
-        <h2>Recent Activity (Today WIB)</h2>
-        <div id="activity-list"></div>
-      </div>
-
-      <!-- Key Decisions -->
-      <div class="card full-width">
-        <h2>Key Decisions</h2>
-        <div id="decisions-list"></div>
-      </div>
-
-      <!-- Next Steps -->
-      <div class="card full-width">
-        <h2>Next Steps</h2>
-        <div id="nextsteps-list"></div>
-      </div>
+    <div class="card">
+      <h2>Daftar Warung & Cafe (Radius 250m)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Distance</th>
+            <th>Coordinates</th>
+            <th>Cuisine</th>
+            <th>Hours</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="warungs-tbody"></tbody>
+      </table>
     </div>
 
-    <footer>
-      Data source: <code>data.json</code> · Hermes Gateway · Corner Table 2B, SoftwareSeni
-    </footer>
+    <div class="card">
+      <h2>Summary</h2>
+      <p id="summary-text" style="color:#888;"></p>
+    </div>
+
+    <p class="source">Data source: <span id="source-text"></span></p>
   </div>
 
   <script>
     fetch('data.json')
       .then(r => r.json())
       .then(data => {
-        // Header
         document.getElementById('project-name').textContent = data.project;
         document.getElementById('tagline').textContent = data.tagline;
-        document.getElementById('platform-badge').textContent = data.platform;
-        document.getElementById('status-badge').textContent = '● ' + data.gateway.status;
-        document.getElementById('workhours-badge').textContent = data.workHours;
+        document.getElementById('location-meta').innerHTML = '<strong>' + data.location.split('—')[0].trim() + '</strong>';
+        document.getElementById('radius-meta').textContent = 'Radius: ' + data.radius + 'm';
+        document.getElementById('total-meta').textContent = data.summary.total + ' places';
 
-        // Gateway
-        document.getElementById('gw-status').textContent = data.gateway.status;
-        document.getElementById('gw-uptime').textContent = data.gateway.uptime;
-        document.getElementById('gw-memory').textContent = data.gateway.memory.baseline + ' – ' + data.gateway.memory.typical;
-        document.getElementById('gw-session').textContent = data.gateway.sessionStorage;
-        document.getElementById('gw-redact').textContent = data.gateway.secretRedaction;
-        document.getElementById('gw-log').textContent = data.systemArchitecture.logLocation;
+        // Summary cards
+        const sr = document.getElementById('summary-row');
+        sr.innerHTML = `
+          <div class="summary-card">
+            <div class="num">${data.summary.total}</div>
+            <div class="label">Total Places</div>
+          </div>
+          <div class="summary-card">
+            <div class="num">${data.summary.restaurants}</div>
+            <div class="label">Restaurants</div>
+          </div>
+          <div class="summary-card">
+            <div class="num">${data.summary.cafes}</div>
+            <div class="label">Cafes</div>
+          </div>
+          <div class="summary-card">
+            <div class="num">${data.summary.closest}</div>
+            <div class="label">Closest</div>
+          </div>
+          <div class="summary-card">
+            <div class="num">${data.summary.furthest}</div>
+            <div class="label">Furthest</div>
+          </div>
+        `;
 
-        // Bot
-        document.getElementById('bot-name').textContent = data.bot.name;
-        document.getElementById('bot-role').textContent = data.bot.role;
-        document.getElementById('bot-personality').textContent = data.bot.personality;
-        document.getElementById('bot-language').textContent = data.bot.language;
-
-        // Architecture
-        document.getElementById('arch-supervision').textContent = data.systemArchitecture.supervision;
-        document.getElementById('arch-container').textContent = data.systemArchitecture.container;
-        document.getElementById('arch-python').textContent = data.systemArchitecture.python;
-
-        // Platforms
-        const ptf = document.getElementById('platforms-list');
-        data.gateway.platforms.forEach(p => {
-          ptf.innerHTML += `
-            <div class="platform-item">
-              <div class="name">${p.name} <span class="connected">[${p.status}]</span></div>
-              <div class="detail">${Object.entries(p).filter(([k]) => !['name','status'].includes(k)).map(([k,v]) => `<span>${k}:</span> ${v}`).join(' · ')}</div>
-            </div>`;
+        // Table rows
+        const tbody = document.getElementById('warungs-tbody');
+        data.warungs.forEach(w => {
+          const typeClass = w.type === 'cafe' ? 'cafe' : 'restaurant';
+          tbody.innerHTML += `
+            <tr>
+              <td>${w.id}</td>
+              <td><span class="name">${w.name}</span></td>
+              <td><span class="type-badge ${typeClass}">${w.type}</span></td>
+              <td><span class="distance">~${w.distance_m}m</span></td>
+              <td><span class="coords">${w.lat}, ${w.lon}</span></td>
+              <td><span class="cuisine">${w.cuisine}</span></td>
+              <td><span class="hours">${w.hours}</span></td>
+              <td><span class="notes">${w.notes}</span></td>
+            </tr>
+          `;
         });
 
-        // Features
-        const ft = document.getElementById('features-list');
-        data.features.forEach(f => {
-          ft.innerHTML += `
-            <div class="feature-item">
-              <div class="name">${f.name}</div>
-              <div class="desc">${f.description}</div>
-            </div>`;
-        });
-
-        // Routing
-        const rt = document.getElementById('routing-body');
-        data.platformRouting.forEach(r => {
-          rt.innerHTML += `<tr><td>${r.intent}</td><td>${r.platform}</td></tr>`;
-        });
-
-        // CLI (architecture section)
-        const cli = document.getElementById('cli-grid');
-        Object.entries(data.cliTools).forEach(([tool, path]) => {
-          cli.innerHTML += `<div class="cli-item"><div class="tool">${tool}</div><div class="path">${path}</div></div>`;
-        });
-        document.getElementById('cli-full').innerHTML = cli.innerHTML;
-
-        // Activity
-        const act = document.getElementById('activity-list');
-        data.recentActivity.forEach(a => {
-          act.innerHTML += `<div class="activity-item"><span class="time">${a.time}</span><span class="event">${a.event}</span></div>`;
-        });
-
-        // Decisions
-        const dec = document.getElementById('decisions-list');
-        data.keyDecisions.forEach(d => {
-          dec.innerHTML += `<div class="decision-item">${d}</div>`;
-        });
-
-        // Next steps
-        const ns = document.getElementById('nextsteps-list');
-        data.nextSteps.forEach((s, i) => {
-          ns.innerHTML += `<div class="next-step"><span class="num">${i+1}</span><span class="text">${s}</span></div>`;
-        });
+        document.getElementById('summary-text').textContent =
+          `${data.summary.restaurants} restaurants and ${data.summary.cafes} cafes within ${data.radius}m from SoftwareSeni office. Closest: ${data.summary.closest}. Furthest: ${data.summary.furthest}.`;
+        document.getElementById('source-text').textContent = data.sources.join(', ');
       })
-      .catch(e => document.body.innerHTML = '<p style="color:red;text-align:center;padding:2rem;">Failed to load data.json: ' + e.message + '</p>');
+      .catch(e => {
+        document.body.innerHTML = '<p style="color:red;text-align:center;padding:2rem;">Failed to load data.json: ' + e.message + '</p>';
+      });
   </script>
 </body>
 </html>

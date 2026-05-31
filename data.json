@@ -1,134 +1,187 @@
 {
   "project": "Warung Makan Sekitar SS",
-  "tagline": "Hermes Check-in Bot — Corner Table 2B, SoftwareSeni",
-  "platform": "Google Chat + Telegram",
-  "location": "Corner Table 2B, SoftwareSeni",
-  "workHours": "8 AM - 5 PM WIB (Strict)",
+  "tagline": "Daftar warung makan & cafe dalam radius 250m dari kantor SoftwareSeni",
+  "location": "SoftwareSeni — Jl. Profesor Doktor Herman Johannes No.1125, Gondokusuman, Yogyakarta",
+  "office_coordinates": { "lat": -7.7811310, "lon": 110.3791662 },
+  "radius_meters": 250,
+  "sources": ["OpenStreetMap Overpass API (2026-05-31)"],
 
-  "bot": {
-    "name": "Papa Zola",
-    "role": "Personal Moderator — Corner Table 2B",
-    "personality": "Warm, wise, firm paternal uncle energy. Street-smart, deeply caring, relentlessly optimistic. Believes in everyone.",
-    "language": "Malaysian Malay + Singlish ONLY. Never follows user language. Pronouns: awak (you), den (Papa Zola), sia (dramatic marker)."
-  },
-
-  "gateway": {
-    "status": "Running",
-    "uptime": "Since 2026-05-31",
-    "memory": {
-      "baseline": "98MB",
-      "typical": "265-306MB under load"
-    },
-    "platforms": [
-      {
-        "name": "Google Chat",
-        "status": "Connected",
-        "project": "natural-quasar-497711-j6",
-        "mode": "Subscription-based with flow control",
-        "features": "Check-in bot, Papa Zola persona, group + DM support",
-        "fileAttachments": "OAuth optional — degrades to text-only fallback"
-      },
-      {
-        "name": "Telegram",
-        "status": "Connected",
-        "mode": "Polling",
-        "commands": "30 registered (public), 107 hidden (over 30 limit)",
-        "scope": "BotCommandScopeDefault, AllPrivateChats, AllGroupChats",
-        "fallbackIPs": "149.154.166.110"
-      }
-    ],
-    "sessionStorage": "SQLite at ~/sessions/",
-    "secretRedaction": "ENABLED — raw tokens/passwords never logged"
-  },
-
-  "systemArchitecture": {
-    "supervision": "s6-overlay (PID1 inside Docker container)",
-    "container": "Docker — /opt/hermes/docker/",
-    "python": "Python 3.x virtualenv at /opt/hermes/.venv/",
-    "logLocation": "./logs/gateway.log, ./logs/errors.log",
-    "startupScript": "/run/service/gateway-default/run"
-  },
-
-  "cliTools": {
-    "gh": "/opt/data/bin/gh",
-    "opencode": "/opt/data/.local/bin/opencode",
-    "lightpanda": "/opt/data/.local/bin/lightpanda",
-    "browser-use": "/opt/hermes/.venv/bin/browser-use",
-    "hermes": "/opt/hermes/.venv/bin/hermes"
-  },
-
-  "features": [
+  "warungs": [
     {
-      "name": "Check-in Bot (Papa Zola)",
-      "description": "Daily check-in at 08:00 & 13:00 WIB Mon-Fri. Warm, energizing prompts in Malaysian Malay + Singlish voice."
+      "id": 1,
+      "name": "Sushiruma",
+      "type": "restaurant",
+      "distance_m": 57,
+      "lat": -7.7815735,
+      "lon": 110.3794209,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": "Closest to SS office"
     },
     {
-      "name": "Work Hours Enforcement",
-      "description": "Strictly 8 AM - 5 PM WIB. No 'within work hours' logic after 5 PM. All timestamps in UTC+7."
+      "id": 2,
+      "name": "Warung Makan Amunasi",
+      "type": "restaurant",
+      "distance_m": 67,
+      "lat": -7.7816819,
+      "lon": 110.3794195,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
     },
     {
-      "name": "Multi-Platform Support",
-      "description": "Google Chat (group + DM) + Telegram polling. Intent-based routing to appropriate platform."
+      "id": 3,
+      "name": "5758 Mie Ayam Ceker",
+      "type": "restaurant",
+      "distance_m": 93,
+      "lat": -7.7804403,
+      "lon": 110.3786863,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
     },
     {
-      "name": "Secret Redaction",
-      "description": "All logs pass through redaction filter. Tokens, passwords, API keys replaced with [REDACTED]."
+      "id": 4,
+      "name": "Mikuya",
+      "type": "restaurant",
+      "distance_m": 146,
+      "lat": -7.782423,
+      "lon": 110.3793968,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
     },
     {
-      "name": "Kanban Worker Dispatcher",
-      "description": "60-second interval ticker. Checks assigned tasks, notifies workers, escalates overdue items."
+      "id": 5,
+      "name": "Ka Story",
+      "type": "restaurant",
+      "distance_m": 156,
+      "lat": -7.7825159,
+      "lon": 110.3793919,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
     },
     {
-      "name": "Cron Job Scheduler",
-      "description": "Scheduled tasks with flexible schedule syntax (30m, every 2h, cron expressions). Delivers to Google Chat."
+      "id": 6,
+      "name": "Starbucks",
+      "type": "cafe",
+      "distance_m": 164,
+      "lat": -7.7826063,
+      "lon": 110.3791029,
+      "cuisine": "coffee_shop",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 7,
+      "name": "TETRA Coffe & Eatery",
+      "type": "cafe",
+      "distance_m": 164,
+      "lat": -7.7803164,
+      "lon": 110.3779374,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 8,
+      "name": "Sagan Dak Galbi",
+      "type": "restaurant",
+      "distance_m": 167,
+      "lat": -7.7826198,
+      "lon": 110.3793977,
+      "cuisine": "korean;indonesian;local;asian",
+      "hours": "-",
+      "phone": "-",
+      "notes": "Korean BBQ option"
+    },
+    {
+      "id": 9,
+      "name": "Kafe Le Sole",
+      "type": "cafe",
+      "distance_m": 180,
+      "lat": -7.780871,
+      "lon": 110.3775615,
+      "cuisine": "-",
+      "hours": "Mo-Fr 08:00-21:00; Sa 10:00-20:00",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 10,
+      "name": "Mie Aceh - Duta Serambi",
+      "type": "restaurant",
+      "distance_m": 183,
+      "lat": -7.7827734,
+      "lon": 110.3793417,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 11,
+      "name": "Nasi Goreng TBK",
+      "type": "restaurant",
+      "distance_m": 191,
+      "lat": -7.7828322,
+      "lon": 110.3794244,
+      "cuisine": "-",
+      "hours": "Mo-Su 14:00-22:30",
+      "phone": "+62 822-4228-9393",
+      "notes": "Instagram: @nasigorengtbk"
+    },
+    {
+      "id": 12,
+      "name": "Couvee Reside",
+      "type": "cafe",
+      "distance_m": 194,
+      "lat": -7.7812392,
+      "lon": 110.3774213,
+      "cuisine": "-",
+      "hours": "Mo-Su 07:00-00:00",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 13,
+      "name": "Waruga Warmindo - Burjo",
+      "type": "restaurant",
+      "distance_m": 194,
+      "lat": -7.782868,
+      "lon": 110.3793796,
+      "cuisine": "-",
+      "hours": "-",
+      "phone": "-",
+      "notes": ""
+    },
+    {
+      "id": 14,
+      "name": "Gudeg Mirasa",
+      "type": "restaurant",
+      "distance_m": 243,
+      "lat": -7.783317,
+      "lon": 110.3792771,
+      "cuisine": "regional",
+      "hours": "-",
+      "phone": "-",
+      "notes": "Regional Javanese food"
     }
   ],
 
-  "platformRouting": [
-    { "intent": "meeting, book room, cari ruangan", "platform": "Google Calendar" },
-    { "intent": "jadwal {guest}", "platform": "Google Calendar + Google Workspace" },
-    { "intent": "github, PR/CI/repo", "platform": "GitHub (gh CLI only)" },
-    { "intent": "eng spec, outline, dokumentasi", "platform": "Outline (owner-only)" },
-    { "intent": "cron, reminder, scheduled", "platform": "Hermes Cron (owner-only)" },
-    { "intent": "obsidian, vault notes", "platform": "Obsidian (read-only mirror)" }
-  ],
-
-  "recentActivity": [
-    { "time": "08:00", "event": "Morning check-in posted to Corner Table 2B" },
-    { "time": "10:35", "event": "Gateway log: Epoll1Poller file descriptor warning (non-fatal)" },
-    { "time": "11:00", "event": "Papa Zola PATH fix applied to s6 run script" },
-    { "time": "11:09", "event": "Outline test doc created successfully" },
-    { "time": "11:11", "event": "Eng Spec doc published to Corner Table collection" },
-    { "time": "11:15", "event": "GitHub Pages enabled — frontend live at dimasbaguspm.github.io" }
-  ],
-
-  "keyDecisions": [
-    "Work hours are STRICTLY 8 AM - 5 PM WIB — no exceptions",
-    "Machine time (UTC+7) must be in context at top of every session",
-    "MEMORY.md must contain ALPHABET CHARACTERS ONLY — no CJK/Cyrillic/Arabic",
-    "Papa Zola speaks Malaysian Malay + Singlish only — never follows user language",
-    "CLI tools PATH: /opt/data/bin:/opt/data/.local/bin:/opt/hermes/.venv/bin",
-    "No direct push to main — feature branch + PR workflow required",
-    "Secret redaction always ON — tokens/passwords never appear in logs"
-  ],
-
-  "nextSteps": [
-    "Expand data.json with richer content (cron jobs detail, kanban tasks)",
-    "Set up GitHub Pages CNAME for custom domain (optional)",
-    "Add CI/CD pipeline to auto-update data.json from gateway health checks",
-    "Create feature branches for future development",
-    "Add unit tests for platform routing logic"
-  ],
-
-  "github": {
-    "repo": "https://github.com/dimasbaguspm/warung-makan-sekitar-ss",
-    "pages": "https://dimasbaguspm.github.io/warung-makan-sekitar-ss/",
-    "visibility": "Public",
-    "branchProtection": "main requires 1 approving PR review"
-  },
-
-  "outline": {
-    "doc": "https://outline.dimasbaguspm.com/doc/engineering-spec-warung-makan-sekitar-ss-L3cOgJEvMI",
-    "collection": "Corner Table"
+  "summary": {
+    "total": 14,
+    "restaurants": 10,
+    "cafes": 4,
+    "closest": "Sushiruma (57m)",
+    "furthest": "Gudeg Mirasa (243m)"
   }
 }
