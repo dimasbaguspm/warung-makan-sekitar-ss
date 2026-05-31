@@ -178,7 +178,7 @@
         document.getElementById('project-name').textContent = data.project;
         document.getElementById('tagline').textContent = data.tagline;
         document.getElementById('location-meta').innerHTML = '<strong>' + data.location.split('—')[0].trim() + '</strong>';
-        document.getElementById('radius-meta').textContent = 'Radius: ' + data.radius + 'm';
+        document.getElementById('radius-meta').textContent = 'Radius: ' + data.radius_meters + 'm';
         document.getElementById('total-meta').textContent = data.summary.total + ' places';
 
         // Summary cards
@@ -225,7 +225,7 @@
         });
 
         document.getElementById('summary-text').textContent =
-          `${data.summary.restaurants} restaurants and ${data.summary.cafes} cafes within ${data.radius}m from SoftwareSeni office. Closest: ${data.summary.closest}. Furthest: ${data.summary.furthest}.`;
+          `${data.summary.restaurants} restaurants and ${data.summary.cafes} cafes within ${data.radius_meters}m from SoftwareSeni office. Closest: ${data.summary.closest}. Furthest: ${data.summary.furthest}.`;
         document.getElementById('source-text').textContent = data.sources.join(', ');
       })
       .catch(e => {
