@@ -1,0 +1,116 @@
+{
+  "project": "Warung Makan Sekitar SS",
+  "tagline": "Hermes Check-in Bot - Corner Table 2B",
+  "platform": "Google Chat + Telegram",
+  "location": "Corner Table 2B, SoftwareSeni",
+  "workHours": "08:00 - 17:00 WIB (Monday - Friday)",
+  "bot": {
+    "name": "Papa Zola",
+    "role": "Warm elder moderator - energetic, optimistic, inspiring",
+    "personality": "Malaysian Malay + Singlish, street-smart uncle energy",
+    "language": "Malaysian Malay + Singlish only (never English, never follows user language)"
+  },
+  "gateway": {
+    "status": "running",
+    "uptime": "2+ hours active",
+    "memory": {
+      "baseline": "98MB",
+      "typical": "265-306MB"
+    },
+    "platforms": [
+      {
+        "name": "Google Chat",
+        "status": "connected",
+        "project": "natural-quasar-497711-j6",
+        "features": ["check-in bot", "Papa Zola persona", "group + DM support"]
+      },
+      {
+        "name": "Telegram",
+        "status": "connected",
+        "mode": "polling",
+        "commands": 30,
+        "hiddenCommands": 107
+      }
+    ],
+    "sessionStorage": "/opt/data/sessions",
+    "secretRedaction": "ENABLED"
+  },
+  "systemArchitecture": {
+    "supervision": "s6-overlay (process supervisor)",
+    "container": "Docker with s6-based init",
+    "python": "hermes.venv (virtual env)",
+    "logLocation": "/opt/data/logs/gateway.log"
+  },
+  "cliTools": {
+    "gh": "/opt/data/bin/gh",
+    "opencode": "/opt/data/.local/bin/opencode",
+    "lightpanda": "/opt/data/.local/bin/lightpanda",
+    "browser_use": "/opt/hermes/.venv/bin/browser-use"
+  },
+  "features": [
+    {
+      "name": "Papa Zola Check-in Bot",
+      "description": "Automated daily check-ins at 08:00 and 13:00 WIB with Papa Zola persona",
+      "cronJobs": [
+        {"name": "checkin_08am_wib", "schedule": "08:00 WIB daily"},
+        {"name": "checkin_1pm_wib", "schedule": "13:00 WIB daily"}
+      ]
+    },
+    {
+      "name": "Work Hours Enforcement",
+      "description": "System only processes requests within 08:00-17:00 WIB. After hours = personal time"
+    },
+    {
+      "name": "Multi-platform Support",
+      "description": "Google Chat (primary) + Telegram (secondary) with unified Papa Zola persona"
+    },
+    {
+      "name": "Platform Routing",
+      "description": "Intent-based routing: meeting→Calendar, github→gh, docs→Outline, cron→Hermes Cron"
+    }
+  ],
+  "platformRouting": [
+    {"intent": "meeting, book room, cari ruangan", "platform": "Google Calendar"},
+    {"intent": "jadwal {guest}", "platform": "Google Calendar + Google Workspace"},
+    {"intent": "github, PR/CI/repo", "platform": "GitHub (gh CLI only)"},
+    {"intent": "eng spec, outline, dokumentasi", "platform": "Outline (owner-only)"},
+    {"intent": "cron, reminder, scheduled", "platform": "Hermes Cron (owner-only)"},
+    {"intent": "obsidian, vault notes", "platform": "Obsidian (read-only mirror)"}
+  ],
+  "config": {
+    "googleChat": {
+      "extra": ["default_prompt", "error_fallback_message", "allow_admin_from", "group_allow_admin_from", "user_allowed_commands", "gateway_restart_notification", "project_id", "subscription_name", "service_account_json"]
+    },
+    "defaultPrompt": {
+      "length": 3414,
+      "persona": "Papa Zola - Malaysian Malay + Singlish warm elder moderator"
+    }
+  },
+  "recentActivity": [
+    {"time": "17:35", "event": "Dimas M asked about platform routing"},
+    {"time": "17:34", "event": "Memory check: 266MB rss"},
+    {"time": "17:30-17:35", "event": "Continued Google Chat processing"},
+    {"time": "17:29:40", "event": "Graceful shutdown initiated"},
+    {"time": "17:29", "event": "Mukti feedback on context/memory formatting rules"},
+    {"time": "17:24", "event": "Mukti (Telegram) feedback on cron job display"},
+    {"time": "17:20", "event": "Dimas M asked about other channels"},
+    {"time": "17:19", "event": "Telegram button resolved 1 approval"},
+    {"time": "17:18", "event": "Mukti requested cron job list"},
+    {"time": "17:16", "event": "Dimas M asked about owner access"},
+    {"time": "17:13-17:15", "event": "Thread visibility discussion"},
+    {"time": "17:12", "event": "Work hours confirmed: 8AM-5PM only"},
+    {"time": "17:11", "event": "Free time analysis discussion"}
+  ],
+  "keyDecisions": [
+    "Work hours are STRICTLY 8 AM - 5 PM WIB",
+    "Machine time (UTC+7) must be in context at top of every session",
+    "MEMORY.md must contain ALPHABET CHARACTERS ONLY (no CJK, Cyrillic, Arabic)",
+    "Papa Zola speaks Malaysian Malay + Singlish only - never follows user language",
+    "CLI tools PATH: /opt/data/bin:/opt/data/.local/bin:/opt/hermes/.venv/bin"
+  ],
+  "nextSteps": [
+    "Add branch protection (forbid direct push to main)",
+    "Create feature branches for development",
+    "Set up CI/CD for frontend deployment"
+  ]
+}

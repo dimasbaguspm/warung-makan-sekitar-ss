@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warung Makan Sekitar SS - Hermes Check-in Bot</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    header {
+      text-align: center;
+      padding: 3rem 02rem;
+      border-bottom: 1px solid #2a2a4a;
+      margin-bottom: 2rem;
+    }
+    header h1 { font-size: 2.2rem; color: #00d4ff; margin-bottom: 0.5rem; }
+    header .tagline { color: #888; font-size: 1.1rem; }
+    .badge-row { margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      background: #1a1a3a;
+      border: 1px solid #00d4ff40;
+      color: #00d4ff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .badge.success { color: #00ff88; border-color: #00ff8840; }
+    .badge.warn { color: #ffaa00; border-color: #ffaa0040; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 1.5rem;
+ }
+    .card h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #00d4ff;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .card h3 { color: #fff; margin: 1rem 0 0.5rem; font-size: 0.95rem; }
+    .card h3:first-child { margin-top: 0; }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #ffffff08;
+    }
+    .status-item:last-child { border-bottom: none; }
+    .status-item .label { color: #888; font-size: 0.9rem; }
+    .status-item .value { font-weight: 600; }
+    .status-item .value.connected { color: #00ff88; }
+    .status-item .value.running { color: #00ff88; }
+
+    .platform-item {
+      background: #0f0f1a;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+    }
+    .platform-item:last-child { margin-bottom: 0; }
+    .platform-item .name { font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .platform-item .detail { font-size: 0.85rem; color: #888; }
+    .platform-item .detail span { color: #00d4ff; }
+
+    .feature-item {
+      background: #0f0f1a;
+      border-left: 3px solid #00d4ff;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 0 8px 8px 0;
+    }
+    .feature-item .name { font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .feature-item .desc { font-size: 0.85rem; color: #aaa; }
+
+    .routing-table { width: 100%; }
+    .routing-table th {
+      text-align: left;
+      color: #888;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .routing-table td { padding: 0.4rem 0; }
+    .routing-table td:first-child { color: #ffaa00; font-size: 0.85rem; }
+    .routing-table td:last-child { color: #00d4ff; font-size: 0.85rem; }
+
+    .activity-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ffffff08;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item .time { color: #00d4ff; font-size: 0.85rem; min-width: 60px; }
+    .activity-item .event { color: #ccc; font-size: 0.9rem; }
+
+    .decision-item {
+      background: #0f0f1a;
+      border-radius: 8px;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .decision-item::before { content: "→ "; color: #00ff88; }
+
+    .cli-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .cli-item {
+      background: #0f0f1a;
+      border-radius: 6px;
+      padding: 0.6rem;
+      font-size: 0.85rem;
+    }
+    .cli-item .tool { color: #00d4ff; font-weight: 700; }
+    .cli-item .path { color: #888; font-size: 0.8rem; word-break: break-all; }
+
+    .full-width { grid-column: 1 / -1; }
+
+    .next-step {
+      display: flex;
+      gap: 0.8rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #ffffff08;
+    }
+    .next-step:last-child { border-bottom: none; }
+    .next-step .num {
+      background: #00d4ff20;
+      color: #00d4ff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .next-step .text { color: #ccc; font-size: 0.9rem; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 2rem;
+      border-top: 1px solid #2a2a4a;
+      color: #555;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="project-name">Loading...</h1>
+      <p class="tagline" id="tagline"></p>
+      <div class="badge-row">
+        <span class="badge" id="platform-badge"></span>
+        <span class="badge success" id="status-badge"></span>
+        <span class="badge warn" id="workhours-badge"></span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Gateway Status -->
+      <div class="card">
+        <h2>Gateway Status</h2>
+        <div class="status-item">
+          <span class="label">Status</span>
+          <span class="value running" id="gw-status">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Uptime</span>
+          <span class="value" id="gw-uptime">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Memory (typical)</span>
+          <span class="value" id="gw-memory">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Session Storage</span>
+          <span class="value" id="gw-session">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Secret Redaction</span>
+          <span class="value" id="gw-redact">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Log Location</span>
+          <span class="value" id="gw-log">—</span>
+        </div>
+      </div>
+
+      <!-- Bot Persona -->
+      <div class="card">
+        <h2>Bot Persona: Papa Zola</h2>
+        <div class="status-item">
+          <span class="label">Name</span>
+          <span class="value" id="bot-name">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Role</span>
+          <span class="value" id="bot-role">—</span>
+        </div>
+        <h3>Personality</h3>
+        <p id="bot-personality" style="color:#888;font-size:0.9rem;margin-top:0.3rem;"></p>
+        <h3>Language Policy</h3>
+        <p id="bot-language" style="color:#ffaa00;font-size:0.85rem;margin-top:0.3rem;"></p>
+      </div>
+
+      <!-- Platforms -->
+      <div class="card">
+        <h2>Connected Platforms</h2>
+        <div id="platforms-list"></div>
+      </div>
+
+      <!-- System Architecture -->
+      <div class="card">
+        <h2>System Architecture</h2>
+        <div class="status-item">
+          <span class="label">Supervision</span>
+          <span class="value" id="arch-supervision">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Container</span>
+          <span class="value" id="arch-container">—</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Python</span>
+          <span class="value" id="arch-python">—</span>
+        </div>
+        <h3>CLI Tools</h3>
+        <div class="cli-grid" id="cli-grid"></div>
+      </div>
+
+      <!-- Features -->
+      <div class="card">
+<h2>Features</h2>
+        <div id="features-list"></div>
+      </div>
+
+      <!-- Platform Routing -->
+      <div class="card">
+        <h2>Platform Routing (Intent → Platform)</h2>
+        <table class="routing-table">
+          <thead>
+            <tr>
+              <th>Intent</th>
+              <th>Platform</th>
+            </tr>
+          </thead>
+          <tbody id="routing-body"></tbody>
+        </table>
+      </div>
+
+      <!-- CLI Tools (full) -->
+      <div class="card full-width">
+        <h2>CLI Tools Available</h2>
+        <div class="cli-grid" id="cli-full"></div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card full-width">
+        <h2>Recent Activity (Today WIB)</h2>
+        <div id="activity-list"></div>
+      </div>
+
+      <!-- Key Decisions -->
+      <div class="card full-width">
+        <h2>Key Decisions</h2>
+        <div id="decisions-list"></div>
+      </div>
+
+      <!-- Next Steps -->
+      <div class="card full-width">
+        <h2>Next Steps</h2>
+        <div id="nextsteps-list"></div>
+      </div>
+    </div>
+
+    <footer>
+      Data source: <code>data.json</code> · Hermes Gateway · Corner Table 2B, SoftwareSeni
+    </footer>
+  </div>
+
+  <script>
+    fetch('data.json')
+      .then(r => r.json())
+      .then(data => {
+        // Header
+        document.getElementById('project-name').textContent = data.project;
+        document.getElementById('tagline').textContent = data.tagline;
+        document.getElementById('platform-badge').textContent = data.platform;
+        document.getElementById('status-badge').textContent = '● ' + data.gateway.status;
+        document.getElementById('workhours-badge').textContent = data.workHours;
+
+        // Gateway
+        document.getElementById('gw-status').textContent = data.gateway.status;
+        document.getElementById('gw-uptime').textContent = data.gateway.uptime;
+        document.getElementById('gw-memory').textContent = data.gateway.memory.baseline + ' – ' + data.gateway.memory.typical;
+        document.getElementById('gw-session').textContent = data.gateway.sessionStorage;
+        document.getElementById('gw-redact').textContent = data.gateway.secretRedaction;
+        document.getElementById('gw-log').textContent = data.systemArchitecture.logLocation;
+
+        // Bot
+        document.getElementById('bot-name').textContent = data.bot.name;
+        document.getElementById('bot-role').textContent = data.bot.role;
+        document.getElementById('bot-personality').textContent = data.bot.personality;
+        document.getElementById('bot-language').textContent = data.bot.language;
+
+        // Architecture
+        document.getElementById('arch-supervision').textContent = data.systemArchitecture.supervision;
+        document.getElementById('arch-container').textContent = data.systemArchitecture.container;
+        document.getElementById('arch-python').textContent = data.systemArchitecture.python;
+
+        // Platforms
+        const ptf = document.getElementById('platforms-list');
+        data.gateway.platforms.forEach(p => {
+          ptf.innerHTML += `
+            <div class="platform-item">
+              <div class="name">${p.name} <span class="connected">[${p.status}]</span></div>
+              <div class="detail">${Object.entries(p).filter(([k]) => !['name','status'].includes(k)).map(([k,v]) => `<span>${k}:</span> ${v}`).join(' · ')}</div>
+            </div>`;
+        });
+
+        // Features
+        const ft = document.getElementById('features-list');
+        data.features.forEach(f => {
+          ft.innerHTML += `
+            <div class="feature-item">
+              <div class="name">${f.name}</div>
+              <div class="desc">${f.description}</div>
+            </div>`;
+        });
+
+        // Routing
+        const rt = document.getElementById('routing-body');
+        data.platformRouting.forEach(r => {
+          rt.innerHTML += `<tr><td>${r.intent}</td><td>${r.platform}</td></tr>`;
+        });
+
+        // CLI (architecture section)
+        const cli = document.getElementById('cli-grid');
+        Object.entries(data.cliTools).forEach(([tool, path]) => {
+          cli.innerHTML += `<div class="cli-item"><div class="tool">${tool}</div><div class="path">${path}</div></div>`;
+        });
+        document.getElementById('cli-full').innerHTML = cli.innerHTML;
+
+        // Activity
+        const act = document.getElementById('activity-list');
+        data.recentActivity.forEach(a => {
+          act.innerHTML += `<div class="activity-item"><span class="time">${a.time}</span><span class="event">${a.event}</span></div>`;
+        });
+
+        // Decisions
+        const dec = document.getElementById('decisions-list');
+        data.keyDecisions.forEach(d => {
+          dec.innerHTML += `<div class="decision-item">${d}</div>`;
+        });
+
+        // Next steps
+        const ns = document.getElementById('nextsteps-list');
+        data.nextSteps.forEach((s, i) => {
+          ns.innerHTML += `<div class="next-step"><span class="num">${i+1}</span><span class="text">${s}</span></div>`;
+        });
+      })
+      .catch(e => document.body.innerHTML = '<p style="color:red;text-align:center;padding:2rem;">Failed to load data.json: ' + e.message + '</p>');
+  </script>
+</body>
+</html>
