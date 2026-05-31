@@ -110,6 +110,7 @@
     td .type-badge.restaurant { background: #00d4ff20; color: #00d4ff; }
     td .type-badge.cafe { background: #00ff8820; color: #00ff88; }
     td .distance { color: #ffaa00; font-weight: 700; }
+    td .coords { color: #aaa; font-size: 0.8rem; }
     td .cuisine { color: #aaa; font-size: 0.85rem; }
     td .hours { color: #888; font-size: 0.8rem; }
     td .notes { color: #666; font-size: 0.8rem; font-style: italic; }
@@ -152,6 +153,7 @@
             <th>Name</th>
             <th>Type</th>
             <th>Distance</th>
+            <th>Coordinates</th>
             <th>Cuisine</th>
             <th>Hours</th>
             <th>Notes</th>
@@ -214,6 +216,7 @@
               <td><span class="name">${w.name}</span></td>
               <td><span class="type-badge ${typeClass}">${w.type}</span></td>
               <td><span class="distance">~${w.distance_m}m</span></td>
+              <td><span class="coords">${w.lat}, ${w.lon}</span></td>
               <td><span class="cuisine">${w.cuisine}</span></td>
               <td><span class="hours">${w.hours}</span></td>
               <td><span class="notes">${w.notes}</span></td>
